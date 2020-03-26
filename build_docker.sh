@@ -1,1 +1,1 @@
-docker build --no-cache -t pywine-pyms-nist .
+docker build --no-cache -t domdfcoding/pywine-pyms-nist .

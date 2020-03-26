@@ -17,5 +17,7 @@ RUN umask 0 && xvfb-run sh -c "\
   wine pip install --no-warn-script-location flask cheroot pyms-nist-search; \
   wineserver -w"
 
+ENV PYTHONUNBUFFERED=1
+
 # Run pynist_search_server
 ENTRYPOINT sh -c 'wine py pynist_search_server.py'

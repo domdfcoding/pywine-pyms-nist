@@ -8,15 +8,15 @@
 import json
 
 # 3rd party
-from flask import Flask, request
-from pyms.Spectrum import MassSpectrum
-from cheroot.wsgi import Server as WSGIServer
-from cheroot.wsgi import PathInfoDispatcher as WSGIPathInfoDispatcher
-
+import pyms
 import pyms_nist_search
+import cheroot
+from cheroot.wsgi import PathInfoDispatcher as WSGIPathInfoDispatcher, Server as WSGIServer
+import flask
+from pyms.Spectrum import MassSpectrum
 from pyms_nist_search.json import PyNISTEncoder
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 # Setup pyms_nist_search
 FULL_PATH_TO_MAIN_LIBRARY = "Z:\\mainlib"
@@ -41,6 +41,21 @@ def status():
 	return status_message, status_code
 
 
+@app.route("/info", methods=['GET'])
+def info():
+	# TODO: Replace with pretty HTML page
+	return f"""pynist_search_server info
+
+	PyMassSpec NIST Search version {pyms_nist_search.__version__}
+
+	PyMassSpec version {pyms.__version__}")
+
+	Flask version {flask.__version__}
+
+	Cheroot version {cheroot.__version__}
+
+"""
+
 @app.route("/search/quick/", methods=['POST'])
 @app.route("/search/quick", methods=['POST'])
 def quick_search():
@@ -49,8 +64,10 @@ def quick_search():
 	if search is None:
 		return status()
 	
-	ms = MassSpectrum(**json.loads(request.get_json()))
-	hit_list = search.spectrum_search(ms)
+	n_hits = flask.request.args.get('n_hits', default=5, type=int)
+	
+	ms = MassSpectrum(**json.loads(flask.request.get_json()))
+	hit_list = search.spectrum_search(ms, n_hits)
 	return json.dumps(hit_list, cls=PyNISTEncoder)
 
 
@@ -62,8 +79,10 @@ def spectrum_search():
 	if search is None:
 		return status()
 	
-	ms = MassSpectrum(**json.loads(request.get_json()))
-	hit_list = search.full_spectrum_search(ms)
+	n_hits = flask.request.args.get('n_hits', default=5, type=int)
+	
+	ms = MassSpectrum(**json.loads(flask.request.get_json()))
+	hit_list = search.full_spectrum_search(ms, n_hits)
 	return json.dumps(hit_list, cls=PyNISTEncoder)
 
 
@@ -75,8 +94,10 @@ def spectrum_search_with_ref_data():
 	if search is None:
 		return status()
 	
-	ms = MassSpectrum(**json.loads(request.get_json()))
-	hit_list = search.full_spectrum_search(ms)
+	n_hits = flask.request.args.get('n_hits', default=5, type=int)
+	
+	ms = MassSpectrum(**json.loads(flask.request.get_json()))
+	hit_list = search.full_spectrum_search(ms, n_hits)
 	output_buffer = []
 	
 	for idx, hit in enumerate(hit_list):
@@ -94,14 +115,17 @@ def loc_search(loc):
 		return status()
 	
 	x = search.get_reference_data(loc)
-	# print(request.data)
+	# print(flask.request.data)
 	return json.dumps(x, cls=PyNISTEncoder)
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+	# print("pynist_search_server info:")
+	# print(f"	 PyMassSpec NIST Search version {pyms_nist_search.__version__}")
+	# print(f"	 PyMassSpec version {pyms.__version__}")
+	
 # 	app.run(debug=True, host="0.0.0.0", port=5001)
 
-if __name__ == '__main__':
 	d = WSGIPathInfoDispatcher({'/': app})
 	server = WSGIServer(('0.0.0.0', 5001), d)
 	

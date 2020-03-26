@@ -41,6 +41,19 @@ def status():
 	return status_message, status_code
 
 
+@app.route("/search/quick/", methods=['POST'])
+@app.route("/search/quick", methods=['POST'])
+def quick_search():
+	print("Searching Spectrum (Quick Search)")
+	
+	if search is None:
+		return status()
+	
+	ms = MassSpectrum(**json.loads(request.get_json()))
+	hit_list = search.spectrum_search(ms)
+	return json.dumps(hit_list, cls=PyNISTEncoder)
+
+
 @app.route("/search/spectrum/", methods=['POST'])
 @app.route("/search/spectrum", methods=['POST'])
 def spectrum_search():

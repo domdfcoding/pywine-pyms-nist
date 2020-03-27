@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>pywine-pyms-nist Info Page</title>
+	
+	<style>
+		
+		h1, h2, h3, h4, table {
+			font-family: arial, sans-serif;
+		}
+		
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+		
+		td, th {
+			text-align: left;
+			padding: 8px;
+		}
+		
+		.highlighted td, th {
+			border: 1px solid #dddddd;
+		}
+		
+		.highlighted tr:nth-child(even) {
+			background-color: #dddddd;
+		}
+		
+		.footer a {
+			text-decoration: none;
+		}
+		
+		div.footer {
+			padding-top: 30px;
+		}
+	
+	</style>
+
+</head>
+<body>
+
+<h1>pywine-pyms-nist Info Page</h1>
+
+
+<table class="highlighted">
+	<tr>
+		<td>pywine-pyms-nist version</td>
+		<td>{{ pywine_pyms_nist_version }}</td>
+	</tr>
+	<tr>
+		<td>PyMassSpec NIST Search version</td>
+		<td>{{ pyms_nist_search_version }}</td>
+	</tr>
+	<tr>
+		<td>PyMassSpec version</td>
+		<td>{{ pyms_version }}</td>
+	</tr>
+	<tr>
+		<td>Flask version</td>
+		<td>{{ flask_version }}</td>
+	</tr>
+	<tr>
+		<td>Cheroot version</td>
+		<td>{{ cheroot_version }}</td>
+	</tr>
+	<tr>
+		<td>Python version</td>
+		<td>{{ python_version }}</td>
+	</tr>
+
+</table>
+
+<h2>Installed Packages</h2>
+
+<table class="highlighted">
+	{% for packages in package_list %}
+	<tr>
+		<td>{{ packages[0] }}</td>
+		<td>{{ packages[1] }}</td>
+		<td>{{ packages[2] }}</td>
+		<td>{{ packages[3] }}</td>
+		<td>{{ packages[4] }}</td>
+	</tr>
+	{% endfor %}
+
+</table>
+
+<div class="footer">
+	<table class="footer">
+		<tr>
+			<td>
+				&copy; 2020 Dominic Davis-Foster
+			</td>
+			<td>
+				<a href="https://github.com/domdfcoding/pywine-pyms-nist">Github</a>
+			</td>
+			<td>
+				<a href="https://hub.docker.com/r/domdfcoding/pywine-pyms-nist">Dockerhub</a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+</body>
+</html>

@@ -8,16 +8,18 @@ LABEL \
   org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.license="MIT" \
   org.label-schema.name="Docker PyMassSpec NIST Search Flask server" \
-  org.label-schema.vcs-url="https://github.com/webcomics/pywine"
+  org.label-schema.vcs-url="https://github.com/domdfcoding/pywine-pyms-nist"
 
-COPY pynist_search_server.py /pynist_search_server.py
+COPY search_server.py /search_server.py
+COPY requirements.txt /requirements.txt
+COPY templates/ /templates/
 
-# Install flask and cheroot for server, plus pyms_nist_search
+# Install dependencies
 RUN umask 0 && xvfb-run sh -c "\
-  wine pip install --no-warn-script-location flask cheroot pyms-nist-search; \
+  wine pip install --no-warn-script-location -r requirements.txt; \
   wineserver -w"
 
 ENV PYTHONUNBUFFERED=1
 
 # Run pynist_search_server
-ENTRYPOINT sh -c 'wine py pynist_search_server.py'
+ENTRYPOINT sh -c 'wine py search_server.py'

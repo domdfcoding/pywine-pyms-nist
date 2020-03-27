@@ -1,0 +1,5 @@
+pyms_nist_search>=0.3.7
+cheroot>=8.3.0
+stdlib_list>=0.6.0
+PyMassSpec>=2.2.10
+Flask>=1.1.1

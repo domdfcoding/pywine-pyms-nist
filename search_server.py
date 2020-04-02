@@ -5,16 +5,16 @@
 #
 
 # stdlib
-import sys
 import json
 import pkgutil
+import sys
 
 # 3rd party
+import cheroot
+import flask
 import pyms
 import pyms_nist_search
-import cheroot
 from cheroot.wsgi import PathInfoDispatcher as WSGIPathInfoDispatcher, Server as WSGIServer
-import flask
 from pyms.Spectrum import MassSpectrum
 from pyms_nist_search.json import PyNISTEncoder
 from stdlib_list import stdlib_list

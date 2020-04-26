@@ -6,6 +6,7 @@
 
 # stdlib
 import json
+import os
 import pkgutil
 import sys
 
@@ -34,8 +35,12 @@ app = flask.Flask(__name__)
 FULL_PATH_TO_MAIN_LIBRARY = "Z:\\mainlib"
 FULL_PATH_TO_WORK_DIR = "Z:\\root"
 
+LIB_TYPE = int(os.environ.get("LIBTYPE"))
+if not LIB_TYPE:  # i.e. environment variable was unset. 0 isn't a valid value either
+	lib_type = pyms_nist_search.NISTMS_MAIN_LIB
+	
 try:
-	search = pyms_nist_search.Engine(FULL_PATH_TO_MAIN_LIBRARY, pyms_nist_search.NISTMS_MAIN_LIB, FULL_PATH_TO_WORK_DIR)
+	search = pyms_nist_search.Engine(FULL_PATH_TO_MAIN_LIBRARY, LIB_TYPE, FULL_PATH_TO_WORK_DIR)
 	
 	status_message = "ready"
 	status_code = 200

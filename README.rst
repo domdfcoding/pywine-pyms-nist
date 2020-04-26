@@ -11,6 +11,9 @@ pywine-pyms-nist
 .. image:: https://img.shields.io/docker/cloud/automated/domdfcoding/pywine-pyms-nist
 	:alt: Docker Cloud Automated build
 	:target: https://hub.docker.com/r/domdfcoding/pywine-pyms-nist/builds
+.. image:: https://img.shields.io/docker/image-size/domdfcoding/pywine-pyms-nist?label=docker%20image%20size
+	:alt: Docker Image Size (latest by date)
+	:target: https://hub.docker.com/r/domdfcoding/pywine-pyms-nist
 .. image:: https://img.shields.io/github/license/domdfcoding/pywine-pyms-nist
 	:alt: GitHub
 	:target: https://opensource.org/licenses/MIT

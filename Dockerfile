@@ -1,4 +1,4 @@
-FROM tobix/pywine
+FROM tobix/pywine:3.12
 MAINTAINER Dominic Davis-Foster "dominic@davis-foster.co.uk"
 
 ARG BUILD_DATE
@@ -22,4 +22,4 @@ RUN umask 0 && xvfb-run sh -c "\
 ENV PYTHONUNBUFFERED=1
 
 # Run pynist_search_server
-ENTRYPOINT export LIBTYPE && sh -c 'wine py search_server.py'
+ENTRYPOINT export LIBTYPE && sh -c 'wine python search_server.py'

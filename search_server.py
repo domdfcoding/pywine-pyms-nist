@@ -123,6 +123,23 @@ def spectrum_search():
 	return sdjson.dumps(hit_list)
 
 
+
+@app.route("/search/cas/", methods=["POST"])
+@app.route("/search/cas", methods=["POST"])
+def cas_search_error():
+	return "No CAS number specified.", 400
+
+@app.route("/search/cas/<number>", methods=["POST"])
+def cas_search(number):
+	print("Searching by CAS number")
+
+	if search is None:
+		return status()
+
+	hit_list = search.cas_search(number)
+	return sdjson.dumps(hit_list)
+
+
 @app.route("/search/spectrum_with_ref_data/", methods=["POST"])
 @app.route("/search/spectrum_with_ref_data", methods=["POST"])
 def spectrum_search_with_ref_data():

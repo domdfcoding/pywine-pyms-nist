@@ -4,6 +4,8 @@
 #
 
 # stdlib
+import base64
+import json
 import os
 import pkgutil
 import sys
@@ -30,15 +32,15 @@ __email__ = "dominic@davis-foster.co.uk"
 app = flask.Flask(__name__)
 
 # Setup pyms_nist_search
-FULL_PATH_TO_MAIN_LIBRARY = "Z:\\mainlib"
 FULL_PATH_TO_WORK_DIR = "Z:\\root"
 
-LIB_TYPE = int(os.environ.get("LIBTYPE"))
-if not LIB_TYPE:  # i.e. environment variable was unset. 0 isn't a valid value either
-	lib_type = pyms_nist_search.NISTMS_MAIN_LIB
+config_b64 = os.environ.get("CONFIG").encode("UTF-8")
+config = json.loads(base64.b64decode(config_b64).decode("UTF-8"))
+
+lib_paths = list(zip(config["lib_paths"], config["lib_types"]))
 
 try:
-	search = pyms_nist_search.Engine(FULL_PATH_TO_MAIN_LIBRARY, LIB_TYPE, FULL_PATH_TO_WORK_DIR)
+	search = pyms_nist_search.Engine(lib_paths, work_dir=FULL_PATH_TO_WORK_DIR)
 
 	status_message = "ready"
 	status_code = 200
@@ -123,11 +125,11 @@ def spectrum_search():
 	return sdjson.dumps(hit_list)
 
 
-
 @app.route("/search/cas/", methods=["POST"])
 @app.route("/search/cas", methods=["POST"])
 def cas_search_error():
 	return "No CAS number specified.", 400
+
 
 @app.route("/search/cas/<number>", methods=["POST"])
 def cas_search(number):
@@ -171,6 +173,16 @@ def loc_search(loc):
 	x = search.get_reference_data(loc)
 	# print(flask.request.data)
 	return sdjson.dumps(x)
+
+
+@app.route("/info/lib_paths", methods=["GET"])
+def info_lib_paths():
+	return search.get_lib_paths()
+
+
+@app.route("/info/active_libs", methods=["GET"])
+def info_active_libs():
+	return search.get_active_libs()
 
 
 if __name__ == "__main__":

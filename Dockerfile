@@ -22,4 +22,4 @@ RUN umask 0 && xvfb-run sh -c "\
 ENV PYTHONUNBUFFERED=1
 
 # Run pynist_search_server
-ENTRYPOINT export LIBTYPE && sh -c 'wine python search_server.py'
+ENTRYPOINT export CONFIG && sh -c 'wine python search_server.py'

@@ -1,5 +1,6 @@
 cheroot>=10.0.1
 flask>=3.0.3
+numpy<2.2.2
 pymassspec>=2.5.0
-pyms-nist-search>=0.7.0
+pyms-nist-search>=0.8.0b1
 stdlib-list>=0.10.0

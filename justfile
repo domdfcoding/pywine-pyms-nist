@@ -13,4 +13,4 @@ lint: unused-imports incomplete-defs bare-ignore
 	tox
 
 build:
-  docker build --no-cache -t domdfcoding/pywine-pyms-nist .
+  docker build --no-cache -t domdfcoding/pywine-pyms-nist:latest .

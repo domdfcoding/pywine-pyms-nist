@@ -25,7 +25,7 @@ from stdlib_list import stdlib_list
 __author__ = "Dominic Davis-Foster"
 __license__ = "MIT"
 __maintainer_email__ = "dominic@davis-foster.co.uk"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 __copyright__ = "2020 Dominic Davis-Foster"
 __email__ = "dominic@davis-foster.co.uk"

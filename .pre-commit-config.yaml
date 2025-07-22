@@ -4,6 +4,11 @@ ci:
   autoupdate_schedule: quarterly
 
 repos:
+ - repo: https://github.com/repo-helper/pyproject-parser
+   rev: v0.13.0
+   hooks:
+    - id: reformat-pyproject
+
  - repo: https://github.com/pre-commit/pre-commit-hooks
    rev: v3.4.0
    hooks:
@@ -62,9 +67,18 @@ repos:
     - id: forbid-crlf
 
  - repo: https://github.com/python-formate/formate
-   rev: v0.7.0
+   rev: v0.8.0
    hooks:
     - id: formate
       exclude: ^(doc-source/conf|__pkginfo__|setup)\.(_)?py$
+
+ - repo: https://github.com/python-coincidence/dep_checker
+   rev: v0.8.0
+   hooks:
+    - id: dep_checker
+      args:
+       - search_server
+       - --req-file
+       - requirements.txt
 
 # Custom hooks can be added below this comment

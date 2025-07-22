@@ -9,6 +9,7 @@ import json
 import os
 import pkgutil
 import sys
+from typing import List, Optional, Tuple, Union
 
 # 3rd party
 import cheroot
@@ -34,10 +35,12 @@ app = flask.Flask(__name__)
 # Setup pyms_nist_search
 FULL_PATH_TO_WORK_DIR = "Z:\\root"
 
-config_b64 = os.environ.get("CONFIG").encode("UTF-8")
+config_b64 = os.environ["CONFIG"].encode("UTF-8")
 config = json.loads(base64.b64decode(config_b64).decode("UTF-8"))
 
 lib_paths = list(zip(config["lib_paths"], config["lib_types"]))
+
+search: Optional[pyms_nist_search.Engine]
 
 try:
 	search = pyms_nist_search.Engine(lib_paths, work_dir=FULL_PATH_TO_WORK_DIR)
@@ -53,12 +56,12 @@ except (ValueError, FileNotFoundError) as e:
 
 
 @app.route('/', methods=["GET"])
-def status():
+def status() -> Tuple[str, int]:
 	return status_message, status_code
 
 
 @app.route("/info", methods=["GET"])
-def info():
+def info() -> str:
 	# TODO: Replace with pretty HTML page
 
 	package_list = []
@@ -97,7 +100,7 @@ def info():
 
 @app.route("/search/quick/", methods=["POST"])
 @app.route("/search/quick", methods=["POST"])
-def quick_search():
+def quick_search() -> Tuple[str, int]:
 	print("Searching Spectrum (Quick Search)")
 
 	if search is None:
@@ -107,12 +110,12 @@ def quick_search():
 
 	ms = MassSpectrum(**sdjson.loads(flask.request.get_json()))
 	hit_list = search.spectrum_search(ms, n_hits)
-	return sdjson.dumps(hit_list)
+	return sdjson.dumps(hit_list), 200
 
 
 @app.route("/search/spectrum/", methods=["POST"])
 @app.route("/search/spectrum", methods=["POST"])
-def spectrum_search():
+def spectrum_search() -> Tuple[str, int]:
 	print("Searching Spectrum")
 
 	if search is None:
@@ -122,29 +125,29 @@ def spectrum_search():
 
 	ms = MassSpectrum(**sdjson.loads(flask.request.get_json()))
 	hit_list = search.full_spectrum_search(ms, n_hits)
-	return sdjson.dumps(hit_list)
+	return sdjson.dumps(hit_list), 200
 
 
 @app.route("/search/cas/", methods=["POST"])
 @app.route("/search/cas", methods=["POST"])
-def cas_search_error():
+def cas_search_error() -> Tuple[str, int]:
 	return "No CAS number specified.", 400
 
 
 @app.route("/search/cas/<number>", methods=["POST"])
-def cas_search(number):
+def cas_search(number: str) -> Tuple[str, int]:
 	print("Searching by CAS number")
 
 	if search is None:
 		return status()
 
 	hit_list = search.cas_search(number)
-	return sdjson.dumps(hit_list)
+	return sdjson.dumps(hit_list), 200
 
 
 @app.route("/search/spectrum_with_ref_data/", methods=["POST"])
 @app.route("/search/spectrum_with_ref_data", methods=["POST"])
-def spectrum_search_with_ref_data():
+def spectrum_search_with_ref_data() -> Tuple[str, int]:
 	print("Searching Spectrum with Ref Data")
 
 	if search is None:
@@ -160,11 +163,11 @@ def spectrum_search_with_ref_data():
 		ref_data = search.get_reference_data(hit.spec_loc)
 		output_buffer.append((hit, ref_data))
 
-	return sdjson.dumps(output_buffer)
+	return sdjson.dumps(output_buffer), 200
 
 
 @app.route("/search/loc/<int:loc>", methods=["GET", "POST"])
-def loc_search(loc):
+def loc_search(loc: int) -> Tuple[str, int]:
 	print("Getting Reference Data")
 
 	if search is None:
@@ -172,16 +175,22 @@ def loc_search(loc):
 
 	x = search.get_reference_data(loc)
 	# print(flask.request.data)
-	return sdjson.dumps(x)
+	return sdjson.dumps(x), 200
 
 
 @app.route("/info/lib_paths", methods=["GET"])
-def info_lib_paths():
+def info_lib_paths() -> Union[List[str], Tuple[str, int]]:
+	if search is None:
+		return status()
+
 	return search.get_lib_paths()
 
 
 @app.route("/info/active_libs", methods=["GET"])
-def info_active_libs():
+def info_active_libs() -> Union[List[int], Tuple[str, int]]:
+	if search is None:
+		return status()
+
 	return search.get_active_libs()
 
 
